@@ -47,6 +47,8 @@ func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	err = json.NewEncoder(w).Encode(resp)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("not sure what happened: %s", err), 400)
