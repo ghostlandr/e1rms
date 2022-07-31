@@ -1,4 +1,4 @@
-package e1rm
+package e1rm_service
 
 import (
 	"testing"
@@ -81,9 +81,11 @@ func TestCalculateE1RMFromStrings(t *testing.T) {
 		},
 	}
 
+	s := e1rmService{}
+
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual, err := CalculateE1RMFromStrings(test.totalWeight, test.rpe, test.reps)
+			actual, err := s.CalculateE1RMFromStrings(test.totalWeight, test.rpe, test.reps)
 			if err != nil {
 				assert.Equal(t, err.Error(), test.expectedError)
 			} else if test.expectedError != "" {

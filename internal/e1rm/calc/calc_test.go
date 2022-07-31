@@ -1,4 +1,4 @@
-package e1rm
+package e1rm_calc
 
 import (
 	"testing"

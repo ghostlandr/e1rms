@@ -1,4 +1,4 @@
-package e1rm
+package e1rm_calc
 
 // Percentages, as per the chart on page 21 of The Bridge eBook: http://www.barbellmedicine.com/the-bridge/
 

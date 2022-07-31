@@ -1,23 +1,23 @@
-package e1rm
+package e1rm_handler
 
 import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-)
 
-type E1rmHandler interface {
-	ServeE1rmRequest(w http.ResponseWriter, r *http.Request)
-}
+	"e1rms/internal/e1rm"
+)
 
 type E1rmResponse struct {
 	E1RM float64 `json:"e1rm"`
 }
 
-type e1rmHandler struct{}
+type e1rmHandler struct {
+	s e1rm.E1RMService
+}
 
-func NewHandler() E1rmHandler {
-	return &e1rmHandler{}
+func New(s e1rm.E1RMService) e1rm.E1RMHandler {
+	return &e1rmHandler{s}
 }
 
 func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
@@ -35,7 +35,7 @@ func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := CalculateE1RMFromStrings(totalWeight, rpe, reps)
+	result, err := e.s.CalculateE1RMFromStrings(totalWeight, rpe, reps)
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error calculating E1RM: %s", err), http.StatusBadRequest)

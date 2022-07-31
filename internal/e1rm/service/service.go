@@ -1,9 +1,18 @@
-package e1rm
+package e1rm_service
 
 import (
 	"fmt"
 	"strconv"
+
+	"e1rms/internal/e1rm"
+	"e1rms/internal/e1rm/calc"
 )
+
+type e1rmService struct{}
+
+func New() e1rm.E1RMService {
+	return &e1rmService{}
+}
 
 var acceptableRpe = []float64{6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10}
 
@@ -16,7 +25,7 @@ func isRpeInRange(rpe float64) bool {
 	return false
 }
 
-func CalculateE1RMFromStrings(totalWeight, rpe, reps string) (float64, error) {
+func (s *e1rmService) CalculateE1RMFromStrings(totalWeight, rpe, reps string) (float64, error) {
 	totalWeightF, err := strconv.ParseFloat(totalWeight, 64)
 	if err != nil {
 		return 0, fmt.Errorf("totalWeight could not be converted to a float: %s", totalWeight)
@@ -40,5 +49,5 @@ func CalculateE1RMFromStrings(totalWeight, rpe, reps string) (float64, error) {
 		return 0, fmt.Errorf("e1rm can't be calculated for rpe outside of this range %v: %s", acceptableRpe, rpe)
 	}
 
-	return CalculateE1RM(totalWeightF, rpeF, int16(repsI)), nil
+	return e1rm_calc.CalculateE1RM(totalWeightF, rpeF, int16(repsI)), nil
 }
