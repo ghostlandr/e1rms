@@ -25,7 +25,7 @@ func isRpeInRange(rpe float64) bool {
 	return false
 }
 
-func (s *e1rmService) CalculateE1RMFromStrings(totalWeight, rpe, reps string) (float64, error) {
+func (s *e1rmService) CalculateE1RM(totalWeight, rpe, reps string) (float64, error) {
 	totalWeightF, err := strconv.ParseFloat(totalWeight, 64)
 	if err != nil {
 		return 0, fmt.Errorf("totalWeight could not be converted to a float: %s", totalWeight)

@@ -3,7 +3,7 @@ package e1rm
 import "net/http"
 
 type E1RMService interface {
-	CalculateE1RMFromStrings(string, string, string) (float64, error)
+	CalculateE1RM(string, string, string) (float64, error)
 }
 
 type E1RMHandler interface {

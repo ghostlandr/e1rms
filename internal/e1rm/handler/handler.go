@@ -35,7 +35,7 @@ func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := e.s.CalculateE1RMFromStrings(totalWeight, rpe, reps)
+	result, err := e.s.CalculateE1RM(totalWeight, rpe, reps)
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error calculating E1RM: %s", err), http.StatusBadRequest)
