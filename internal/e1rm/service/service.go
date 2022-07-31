@@ -25,6 +25,8 @@ func isRpeInRange(rpe float64) bool {
 	return false
 }
 
+// CalculateE1RM takes the total weight lifted, the rpe, and the reps performed as strings
+// and does the work to convert them to the values that the calculator expects.
 func (s *e1rmService) CalculateE1RM(totalWeight, rpe, reps string) (float64, error) {
 	totalWeightF, err := strconv.ParseFloat(totalWeight, 64)
 	if err != nil {
