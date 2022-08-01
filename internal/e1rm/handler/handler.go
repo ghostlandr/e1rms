@@ -1,9 +1,11 @@
 package e1rm_handler
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"e1rms/internal/e1rm"
 )
@@ -26,6 +28,9 @@ func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
 	q := r.URL.Query()
 	totalWeight := q.Get("totalWeight")
 	reps := q.Get("reps")
@@ -35,7 +40,7 @@ func (e *e1rmHandler) ServeE1rmRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := e.s.CalculateE1RM(r.Context(), totalWeight, rpe, reps)
+	result, err := e.s.CalculateE1RM(ctx, totalWeight, rpe, reps)
 
 	if err != nil {
 		http.Error(w, fmt.Sprintf("error calculating E1RM: %s", err), http.StatusBadRequest)
