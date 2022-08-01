@@ -1,10 +1,19 @@
 package e1rm_service
 
 import (
+	"context"
+	e1rm_calc "e1rms/internal/e1rm/calc"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
+
+type modelStub struct{}
+
+func (m *modelStub) SaveE1RM(context.Context, e1rm_calc.E1RMCalculation) error {
+	return nil
+}
+func (m *modelStub) ListE1RMs(context.Context) {}
 
 func TestCalculateE1RMFromStrings(t *testing.T) {
 	tests := []struct {
@@ -81,11 +90,11 @@ func TestCalculateE1RMFromStrings(t *testing.T) {
 		},
 	}
 
-	s := e1rmService{}
+	s := e1rmService{model: &modelStub{}}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			actual, err := s.CalculateE1RM(test.totalWeight, test.rpe, test.reps)
+			actual, err := s.CalculateE1RM(context.TODO(), test.totalWeight, test.rpe, test.reps)
 			if err != nil {
 				assert.Equal(t, err.Error(), test.expectedError)
 			} else if test.expectedError != "" {

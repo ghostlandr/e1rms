@@ -33,7 +33,7 @@ func Test_e1rms(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			got := CalculateE1RM(test.totalWeight, test.rpe, test.reps)
-			assert.Equal(t, test.want, got)
+			assert.Equal(t, test.want, got.E1RM)
 		})
 	}
 }

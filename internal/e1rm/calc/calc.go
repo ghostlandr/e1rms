@@ -109,6 +109,13 @@ func lookupPercentage(rpe float64, reps int16) float64 {
 	return getPercentages()[rpe][reps]
 }
 
+type E1RMCalculation struct {
+	TotalWeight float64
+	RPE         float64
+	Reps        int16
+	E1RM        float64
+}
+
 /**
  * Given a weight, an RPE, and a number of reps, calculate the estimated 1RM for that lift.
  *
@@ -121,10 +128,16 @@ func CalculateE1RM(
 	totalWeight float64,
 	rpe float64,
 	reps int16,
-) float64 {
+) E1RMCalculation {
 	if totalWeight == 0 || rpe == 1 || reps == 0 {
-		return 0
+		return E1RMCalculation{E1RM: 0}
 	}
 	percentageFromChart := lookupPercentage(rpe, reps)
-	return (totalWeight * 100) / percentageFromChart
+	result := (totalWeight * 100) / percentageFromChart
+	return E1RMCalculation{
+		TotalWeight: totalWeight,
+		RPE:         rpe,
+		Reps:        reps,
+		E1RM:        result,
+	}
 }
