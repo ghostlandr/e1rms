@@ -84,7 +84,7 @@ func modelE1rmsToCalcE1rms(in []*e1RMCalculation) []*e1rm_calc.E1RMCalculation {
 }
 
 func (m *e1rmModel) ProvisionTables(ctx context.Context) {
-	_, err := m.db.Exec(ctx, createTable)
+	_, err := m.db.Exec(ctx, alterTable)
 	if err != nil {
 		fmt.Printf("Error when creating table: %v\n", err)
 		return
