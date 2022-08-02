@@ -15,12 +15,25 @@ type e1rmResponse struct {
 	E1RM float64 `json:"e1rm"`
 }
 
-type listE1rmResponse struct {
-	E1RMs []*e1rm_calc.E1RMCalculation
-}
-
 type e1rmHandler struct {
 	s e1rm.E1RMService
+}
+
+/*
+  weight: number;
+  rpe: number;
+  reps: number;
+  lift: string;
+  e1rm: string;
+  created?: Date;
+*/
+type ApiE1RMCalculation struct {
+	TotalWeight  float64 `json:"weight"`
+	RPE          float64 `json:"rpe"`
+	Reps         int16   `json:"reps"`
+	Lift         string  `json:"lift"`
+	Estimated1RM float64 `json:"e1rm"`
+	CreatedAt    string  `json:"created"`
 }
 
 func New(s e1rm.E1RMService) e1rm.E1RMHandler {
@@ -80,15 +93,28 @@ func (e *e1rmHandler) ServeListE1rmRequest(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	resp := listE1rmResponse{
-		E1RMs: e1rms,
-	}
+	apiE1rms := e1rmsToApiE1rms(e1rms)
 
 	w.Header().Add("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	err = json.NewEncoder(w).Encode(resp)
+	err = json.NewEncoder(w).Encode(apiE1rms)
 	if err != nil {
 		http.Error(w, fmt.Sprintf("not sure what happened: %s", err), 400)
 	}
+}
+
+func e1rmsToApiE1rms(e1rms []*e1rm_calc.E1RMCalculation) []ApiE1RMCalculation {
+	apiE1rms := make([]ApiE1RMCalculation, len(e1rms))
+	for idx, e1rm := range e1rms {
+		apiE1rms[idx] = ApiE1RMCalculation{
+			TotalWeight:  e1rm.TotalWeight,
+			RPE:          e1rm.RPE,
+			Reps:         e1rm.Reps,
+			Estimated1RM: e1rm.E1RM,
+			CreatedAt:    e1rm.CreatedAt,
+			Lift:         "Squat, why not",
+		}
+	}
+	return apiE1rms
 }
