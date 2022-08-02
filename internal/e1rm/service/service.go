@@ -60,3 +60,7 @@ func (s *e1rmService) CalculateE1RM(ctx context.Context, totalWeight, rpe, reps 
 
 	return result.E1RM, nil
 }
+
+func (s *e1rmService) ListE1RMs(ctx context.Context) ([]*e1rm_calc.E1RMCalculation, error) {
+	return s.model.ListE1RMs(ctx)
+}

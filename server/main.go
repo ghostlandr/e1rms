@@ -29,6 +29,7 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v0/e1rm", e1rmHandler.ServeE1rmRequest)
+	mux.HandleFunc("/api/v0/e1rms", e1rmHandler.ServeListE1rmRequest)
 	mux.HandleFunc("/api/v0/provision_e1rm_table", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)

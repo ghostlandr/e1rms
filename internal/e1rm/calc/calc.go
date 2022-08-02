@@ -114,6 +114,7 @@ type E1RMCalculation struct {
 	RPE         float64
 	Reps        int16
 	E1RM        float64
+	CreatedAt   string
 }
 
 /**

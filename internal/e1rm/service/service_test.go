@@ -13,7 +13,10 @@ type modelStub struct{}
 func (m *modelStub) SaveE1RM(context.Context, e1rm_calc.E1RMCalculation) error {
 	return nil
 }
-func (m *modelStub) ListE1RMs(context.Context) {}
+func (m *modelStub) ListE1RMs(context.Context) ([]*e1rm_calc.E1RMCalculation, error) {
+	return nil, nil
+}
+func (m *modelStub) ProvisionTables(context.Context) {}
 
 func TestCalculateE1RMFromStrings(t *testing.T) {
 	tests := []struct {
