@@ -18,4 +18,5 @@ type E1RMHandler interface {
 type E1RMModel interface {
 	SaveE1RM(context.Context, e1rm_calc.E1RMCalculation) error
 	ListE1RMs(context.Context)
+	ProvisionTables(context.Context)
 }

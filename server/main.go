@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 
@@ -15,26 +16,30 @@ import (
 )
 
 func main() {
-	dburl := os.Getenv("DATABASE_URL")
-	if dburl != "" {
-		fmt.Println("Got a DB url that was longer than an empty string...")
-	}
 	conn, err := pgxpool.Connect(context.Background(), os.Getenv("DATABASE_URL"))
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Unable to connect to database: %v\n", err)
 		os.Exit(1)
 	}
 	defer conn.Close()
-	fmt.Println("We seem to have gotten through the DB connection phase")
 
 	e1rmModel := e1rm_model.New(conn)
 	e1rmService := e1rm_service.New(e1rmModel)
 	e1rmHandler := e1rm_handler.New(e1rmService)
 
-	fmt.Println("Domain objects created")
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v0/e1rm", e1rmHandler.ServeE1rmRequest)
+	mux.HandleFunc("/api/v0/provision_e1rm_table", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+			return
+		}
+
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+
+		e1rmModel.ProvisionTables(ctx)
+	})
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"

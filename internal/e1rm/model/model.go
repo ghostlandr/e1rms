@@ -36,6 +36,11 @@ func (m *e1rmModel) SaveE1RM(ctx context.Context, e1rm e1rm_calc.E1RMCalculation
 
 func (m *e1rmModel) ListE1RMs(ctx context.Context) {}
 
-// func (m *e1rmModel) ProvisionTables(ctx context.Context) {
-// 	m.db.Exec(ctx)
-// }
+func (m *e1rmModel) ProvisionTables(ctx context.Context) {
+	_, err := m.db.Exec(ctx, createTable)
+	if err != nil {
+		fmt.Printf("Error when creating table: %v\n", err)
+		return
+	}
+	fmt.Printf("Table created successfully?\n")
+}
