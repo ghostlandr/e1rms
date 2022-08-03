@@ -8,7 +8,7 @@ import (
 )
 
 type E1RMService interface {
-	CalculateE1RM(context.Context, string, string, string) (float64, error)
+	CalculateE1RM(context.Context, string, string, string, string) (float64, error)
 	ListE1RMs(context.Context) ([]*e1rm_calc.E1RMCalculation, error)
 }
 

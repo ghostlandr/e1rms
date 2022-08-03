@@ -30,7 +30,7 @@ func isRpeInRange(rpe float64) bool {
 
 // CalculateE1RM takes the total weight lifted, the rpe, and the reps performed as strings
 // and does the work to convert them to the values that the calculator expects.
-func (s *e1rmService) CalculateE1RM(ctx context.Context, totalWeight, rpe, reps string) (float64, error) {
+func (s *e1rmService) CalculateE1RM(ctx context.Context, totalWeight, rpe, reps, lift string) (float64, error) {
 	totalWeightF, err := strconv.ParseFloat(totalWeight, 64)
 	if err != nil {
 		return 0, fmt.Errorf("totalWeight could not be converted to a float: %s", totalWeight)
@@ -55,6 +55,7 @@ func (s *e1rmService) CalculateE1RM(ctx context.Context, totalWeight, rpe, reps 
 	}
 
 	result := e1rm_calc.CalculateE1RM(totalWeightF, rpeF, int16(repsI))
+	result.Lift = lift
 
 	s.model.SaveE1RM(ctx, result)
 

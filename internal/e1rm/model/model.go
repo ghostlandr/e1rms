@@ -19,6 +19,7 @@ type e1RMCalculation struct {
 	Reps        int16
 	E1RM        float64 `db:"estimated_1rm"`
 	CreatedAt   time.Time
+	Lift        *string
 }
 
 type DB interface {
@@ -44,7 +45,9 @@ func (m *e1rmModel) SaveE1RM(ctx context.Context, e1rm e1rm_calc.E1RMCalculation
 	}
 	defer tx.Rollback(context.Background())
 
-	_, err = tx.Exec(ctx, `INSERT INTO e1rms VALUES ($1, $2, $3, $4, $5)`, e1rm.TotalWeight, e1rm.RPE, e1rm.Reps, e1rm.E1RM, time.Now().UTC())
+	_, err = tx.Exec(ctx, `INSERT INTO 
+	e1rms (total_weight, rpe, reps, estimated_1rm, created_at, lift)
+	VALUES ($1, $2, $3, $4, $5, $6)`, e1rm.TotalWeight, e1rm.RPE, e1rm.Reps, e1rm.E1RM, time.Now().UTC(), e1rm.Lift)
 	if err != nil {
 		return err
 	}
@@ -59,7 +62,7 @@ func (m *e1rmModel) SaveE1RM(ctx context.Context, e1rm e1rm_calc.E1RMCalculation
 
 func (m *e1rmModel) ListE1RMs(ctx context.Context) ([]*e1rm_calc.E1RMCalculation, error) {
 	var e1rms []*e1RMCalculation
-	err := pgxscan.Select(ctx, m.db, &e1rms, `SELECT total_weight, rpe, reps, estimated_1rm, created_at FROM e1rms ORDER BY created_at DESC`)
+	err := pgxscan.Select(ctx, m.db, &e1rms, `SELECT total_weight, rpe, reps, estimated_1rm, created_at, lift FROM e1rms ORDER BY created_at DESC`)
 
 	if err != nil {
 		fmt.Printf("Error selecting with pgxscan: %v\n", err)
@@ -72,19 +75,24 @@ func (m *e1rmModel) ListE1RMs(ctx context.Context) ([]*e1rm_calc.E1RMCalculation
 func modelE1rmsToCalcE1rms(in []*e1RMCalculation) []*e1rm_calc.E1RMCalculation {
 	out := make([]*e1rm_calc.E1RMCalculation, len(in))
 	for idx, calc := range in {
+		var lift string
+		if calc.Lift != nil {
+			lift = *calc.Lift
+		}
 		out[idx] = &e1rm_calc.E1RMCalculation{
 			TotalWeight: calc.TotalWeight,
 			RPE:         calc.RPE,
 			Reps:        calc.Reps,
 			E1RM:        calc.E1RM,
 			CreatedAt:   calc.CreatedAt.String(),
+			Lift:        lift,
 		}
 	}
 	return out
 }
 
 func (m *e1rmModel) ProvisionTables(ctx context.Context) {
-	_, err := m.db.Exec(ctx, alterTable)
+	_, err := m.db.Exec(ctx, alterTableAddLift)
 	if err != nil {
 		fmt.Printf("Error when creating table: %v\n", err)
 		return

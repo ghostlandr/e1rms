@@ -7,4 +7,5 @@ var createTable = `CREATE TABLE IF NOT EXISTS e1rms (
 	estimated_1rm NUMERIC(5, 1) NOT NULL
 )`
 
-var alterTable = `ALTER TABLE e1rms ADD COLUMN created_at TIMESTAMP`
+var alterTableAddCreated = `ALTER TABLE e1rms ADD COLUMN created_at TIMESTAMP`
+var alterTableAddLift = `ALTER TABLE e1rms ADD COLUMN lift varchar(50)`
